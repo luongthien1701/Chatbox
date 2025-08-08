@@ -1,24 +1,75 @@
 package com.example.demo.Model;
 
+
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "Acount") 
+@Table(name = "acount")
 public class Acount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
 
     private String username;
-
     private String password;
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    @Column(name = "display_name")
+    private String displayName;
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    @OneToMany(mappedBy = "user")
+    private List<ConversationMember> conversationMembers;
+
+    @OneToMany(mappedBy = "user")
+    private List<messages> messages;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public List<ConversationMember> getConversationMembers() {
+        return conversationMembers;
+    }
+
+    public void setConversationMembers(List<ConversationMember> conversationMembers) {
+        this.conversationMembers = conversationMembers;
+    }
+
+    public List<messages> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<messages> messages) {
+        this.messages = messages;
+    }
 }
