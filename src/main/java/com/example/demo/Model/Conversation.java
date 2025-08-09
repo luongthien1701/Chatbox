@@ -15,6 +15,7 @@ public class Conversation {
     private String name;
 
     @OneToMany(mappedBy = "conversation")
+    @JsonIgnoreProperties("conversation")
     private List<ConversationMember> members;
 
     @OneToMany(mappedBy = "conversation")

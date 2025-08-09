@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 
@@ -19,12 +20,12 @@ public class messages {
 
     @ManyToOne
 	@JoinColumn(name = "conversation_id")
-	@JsonIgnoreProperties("messages")  // chặn serialize lại messages từ conversation
+	@JsonIgnoreProperties({"messages", "members"})  // chặn serialize lại messages từ conversation
 	private Conversation conversation;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@JsonIgnoreProperties("messages")  // chặn serialize lại messages từ user
+	@JsonIgnoreProperties({"messages", "conversationMembers", "password"})  // chặn serialize lại messages từ user
 	private Acount user;
 
 

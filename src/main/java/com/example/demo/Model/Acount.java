@@ -4,6 +4,8 @@ package com.example.demo.Model;
 import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "acount")
 public class Acount {
@@ -14,17 +16,20 @@ public class Acount {
     private Integer userId;
 
     private String username;
+    
+    @JsonIgnore
     private String password;
 
     @Column(name = "display_name")
     private String displayName;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
     private List<ConversationMember> conversationMembers;
 
     @OneToMany(mappedBy = "user")
-@JsonIgnoreProperties("user") // chặn serialize lại user từ messages
-private List<messages> messages;
+    @JsonIgnoreProperties("user") // chặn serialize lại user từ messages
+    private List<messages> messages;
 
 
     public Integer getUserId() {
