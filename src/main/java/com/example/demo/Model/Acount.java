@@ -3,7 +3,7 @@ package com.example.demo.Model;
 
 import jakarta.persistence.*;
 import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "acount")
 public class Acount {
@@ -23,7 +23,9 @@ public class Acount {
     private List<ConversationMember> conversationMembers;
 
     @OneToMany(mappedBy = "user")
-    private List<messages> messages;
+@JsonIgnoreProperties("user") // chặn serialize lại user từ messages
+private List<messages> messages;
+
 
     public Integer getUserId() {
         return userId;

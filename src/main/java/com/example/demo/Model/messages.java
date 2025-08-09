@@ -2,6 +2,9 @@ package com.example.demo.Model;
 
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -15,15 +18,18 @@ public class messages {
     private Integer messagesId;
 
     @ManyToOne
-    @JoinColumn(name = "conversation_id")
-    private Conversation conversation;
+	@JoinColumn(name = "conversation_id")
+	@JsonIgnoreProperties("messages")  // chặn serialize lại messages từ conversation
+	private Conversation conversation;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Acount user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonIgnoreProperties("messages")  // chặn serialize lại messages từ user
+	private Acount user;
+
 
     private String context;
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
     // Getters and setters
     public Integer getMessagesId() {
@@ -57,11 +63,11 @@ public class messages {
     public void setContext(String context) {
         this.context = context;
     }
-    public Date gettimestamp() {
+    public LocalDateTime gettimestamp() {
         return timestamp;
     }
 
-    public void settimestamp(Date timestamp) {
+    public void settimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.Model;
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "conversation")
@@ -17,7 +18,9 @@ public class Conversation {
     private List<ConversationMember> members;
 
     @OneToMany(mappedBy = "conversation")
-    private List<messages> messeges;
+	@JsonIgnoreProperties("conversation")
+	private List<messages> messeges;
+
 
     // Getters and setters
     public Integer getConversationId() {

@@ -1,35 +1,70 @@
 package com.example.demo.Socket;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
+import java.util.Optional;
+import java.util.Set;
 
+import com.example.demo.Model.Acount;
 import com.example.demo.Service.ChatMessageService;
+import com.example.demo.repository.AcountRepository;
 
 public class TcpChatHandler extends Thread {
-    private Socket socket;
-    private ChatMessageService service;
+    private final Socket socket;
+    private final ChatMessageService service;
+    private final Set<PrintWriter> clientWriters;
+    private final AcountRepository acountRepository;
 
-    public TcpChatHandler(Socket socket, ChatMessageService service) {
+    // Constructor injection
+    public TcpChatHandler(Socket socket,
+                          ChatMessageService service,
+                          Set<PrintWriter> clientWriters,
+                          AcountRepository acountRepository) {
         this.socket = socket;
         this.service = service;
+        this.clientWriters = clientWriters;
+        this.acountRepository = acountRepository;
     }
 
     @Override
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        try (
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        ) {
+            clientWriters.add(out);
+
             String input;
             while ((input = in.readLine()) != null) {
                 String[] parts = input.split(":", 2);
                 if (parts.length == 2) {
-                    String sender = parts[0].trim();
+                    String senderStr = parts[0].trim();
                     String message = parts[1].trim();
-                    service.getRecentMessages();
+
+                    Optional<Acount> userOpt = acountRepository.findByDisplayName(senderStr);
+                    if (userOpt.isPresent()) {
+                        Acount user = userOpt.get();
+                        service.saveMessage(user.getUserId(), message);
+
+                        synchronized (clientWriters) {
+                            for (PrintWriter writer : clientWriters) {
+                                writer.println(senderStr + ": " + message);
+                            }
+                        }
+                    } else {
+                        out.println("User not found: " + senderStr);
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            clientWriters.removeIf(PrintWriter::checkError);
         }
     }
 }

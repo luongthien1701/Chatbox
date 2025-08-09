@@ -16,12 +16,11 @@ public class RegisController {
     private AcountRepository acountRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<?> adduser(@RequestBody Acount regisData) {
-    	if (acountRepository.findByUsername(regisData.getUsername()).isPresent())
-    	{
-    		return ResponseEntity.badRequest().body("Tai khoan ton tai");
-    	}
-        Acount user = acountRepository.save(regisData);
-        return ResponseEntity.ok(user);
+public ResponseEntity<?> adduser(@RequestBody Acount regisData) {
+    if (acountRepository.findByUsername(regisData.getUsername()).isPresent()) {
+        return ResponseEntity.badRequest().body("Tai khoan ton tai");
     }
+    acountRepository.save(regisData);
+    return ResponseEntity.ok("Đăng kí thành công!");
+}
 }
